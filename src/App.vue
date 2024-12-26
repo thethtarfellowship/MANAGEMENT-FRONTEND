@@ -1,52 +1,3 @@
-<!-- <template>
-  
-  <HelloWorld msg="Welcome to Your Vue.js App"/>
-</template>
-
-<script>
-import HelloWorld from './components/HelloWorld.vue'
-import UserLogin from './components/UserLogin.vue'; // Import UserLogin component
-import Register from './components/UserRegister.vue'; // Import Register component
-
-export default {
-  name: 'App',
-  components: {
-    HelloWorld
-  }
-}
-</script>
-
-<style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
-</style>
-<template>
-  <div id="app">
-    <ProductList />
-  </div>
-</template>
-
-<script>
-
-import ProductList from './components/ProductList.vue';
-
-export default {
-  name: 'App',
-  components: {
-    ProductList
-  }
-};
-</script>
-
-<style>
-/* Your styles here */
-</style> --> 
 <template>
   <div id="app">
     <!-- Optional: A simple navigation bar -->
@@ -56,6 +7,8 @@ export default {
         <li><router-link to="/login">Login</router-link></li>
         <li><router-link to="/register">Register</router-link></li>
         <li><router-link to="/product">Product</router-link></li>
+        <li><router-link to="/exchange-rate">Exchange Rate</router-link></li>
+        <li><router-link to="/translate">Translate</router-link></li>
         <li><button @click="logout">Logout</button></li>
       </ul>
     </nav>
