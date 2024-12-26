@@ -39,7 +39,7 @@ export default {
 }
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
+
 <style scoped>
 h3 {
   margin: 40px 0 0;
@@ -55,4 +55,43 @@ li {
 a {
   color: #42b983;
 }
-</style>
+</style> 
+
+
+
+
+<!-- <template>
+  <div>
+    <h1>Product List</h1>
+    <ul>
+      <li v-for="product in products" :key="product.id">
+        {{ product.name }} - ${{ product.price }}
+      </li>
+    </ul>
+  </div>
+</template>
+
+<script>
+import axios from "axios";
+
+export default {
+  data() {
+    return {
+      products: [],
+    };
+  },
+  created() {
+    this.fetchProducts();
+  },
+  methods: {
+    async fetchProducts() {
+      try {
+        const response = await axios.get("http://localhost:5004/api/products");
+        this.products = response.data; // Ensure this matches the API response format
+      } catch (error) {
+        console.error("Error fetching products:", error);
+      }
+    },
+  },
+};
+</script> -->
