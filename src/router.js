@@ -7,7 +7,7 @@ import UserLogin from './components/UserLogin.vue'; // Import UserLogin componen
 import ExchangeRate from './components/ExchangeRate.vue'; // Import ExchangeRate component
 import UserRegister from './components/UserRegister.vue';
 import ProductList from './components/ProductList.vue';
-
+import MyProductList from './components/MyProducts.vue';
 import TranslateLang from './components/TranslateLang.vue';
 // Define routes
 const routes = [
@@ -30,12 +30,20 @@ const routes = [
     path: '/product', // The root path
     name: 'ProductList', // Route name
     component: ProductList, // Component to render
+    meta: { requiresAuth: true }
   },
   {
-    path: "/exchange-rate", // Add a route for the exchange rate page
-    name: "ExchangeRate",
-    component: ExchangeRate,
+    path: '/myproduct', // The root path
+    name: 'MyProductList', // Route name
+    component: MyProductList, // Component to render
+    meta: { requiresAuth: true }
   },
+  // {
+  //   path: "/exchange-rate", // Add a route for the exchange rate page
+  //   name: "ExchangeRate",
+  //   component: ExchangeRate,
+  // },
+  { path: '/exchange-rate', component: ExchangeRate, meta: { requiresAuth: true } , name: 'ExchangeRate' },
   {
     path: "/translate", // Add a route for the exchange rate page
     name: "TranslateLang",
@@ -49,5 +57,13 @@ const router = createRouter({
   history: createWebHistory(), // Use HTML5 history mode (no hash in URL)
   routes, // Define the routes array here
 });
-
+router.beforeEach((to, from, next) => {
+  const isAuthenticated = !!localStorage.getItem("token");
+  if (to.matched.some(record => record.meta.requiresAuth) && !isAuthenticated) {
+    // Redirect to login page if not authenticated
+    next('/login');
+  } else {
+    next();
+  }
+});
 export default router; // Export the router instance

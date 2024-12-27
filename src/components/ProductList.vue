@@ -21,6 +21,10 @@
     created() {
       this.fetchProducts();
     },
+  //   mounted() {
+  //   // Reload the page when the component is mounted
+  //   window.location.reload();
+  // },
 //     methods: {
 //       async fetchProducts() {
 //         try {
@@ -43,7 +47,7 @@ methods: {
           return;
         }
 
-        const response = await axios.get("https://localhost:7058/api/products", {
+        const response = await axios.get("https://localhost:5004/api/products", {
           headers: {
             Authorization: `Bearer ${token}`, // Include the token in the request header
           },
