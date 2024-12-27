@@ -1,24 +1,23 @@
 <template>
   <div id="app">
-    <!-- Optional: A simple navigation bar -->
+    <!-- Navigation Bar -->
     <nav>
-      <ul>
-        <li v-if="!isAuthenticated"><router-link to="/login">Login</router-link></li>
-        <li v-if="!isAuthenticated"><router-link to="/register">Register</router-link></li>
-        <li v-if="isAuthenticated"><router-link to="/product">Product</router-link></li>
-        <li v-if="isAuthenticated"><router-link to="/exchange-rate">Exchange Rate</router-link></li>
-        <li v-if="isAuthenticated"><router-link to="/myproduct">MyProduct</router-link></li>
-        <!-- <li v-if="isAuthenticated"><router-link to="/translate">Translate</router-link></li> -->
-        <li v-if="isAuthenticated"><button @click="logout">Logout</button></li>
+      <ul class="nav-links">
+        <li v-if="!isAuthenticated"><router-link to="/login" class="nav-link">Login</router-link></li>
+        <li v-if="!isAuthenticated"><router-link to="/register" class="nav-link">Register</router-link></li>
+        <li v-if="isAuthenticated"><router-link to="/product" class="nav-link">Product</router-link></li>
+        <li v-if="isAuthenticated"><router-link to="/exchange-rate" class="nav-link">Exchange Rate</router-link></li>
+        <li v-if="isAuthenticated"><router-link to="/myproduct" class="nav-link">MyProduct</router-link></li>
+        <li v-if="isAuthenticated"><button @click="logout" class="logout-button">Logout</button></li>
       </ul>
     </nav>
 
     <!-- Display user details if authenticated -->
-    <div v-if="isAuthenticated">
-      <p>Welcome, {{ user.username }} (Email: {{ user.userId }})</p>
+    <div v-if="isAuthenticated" class="welcome-message">
+      <p>Welcome, <strong>{{ user.username }}</strong> (Email: {{ user.userId }})</p>
     </div>
 
-    <!-- The router-view will display the component corresponding to the current route -->
+    <!-- Router view to display corresponding component -->
     <router-view></router-view>
   </div>
 </template>
@@ -26,47 +25,43 @@
 <script>
 import axios from 'axios';
 
-// Set Axios default base URL for all API requests
 axios.defaults.baseURL = 'http://localhost:5004';
 
 export default {
   name: 'App',
   data() {
     return {
-      user: {} // User data will be stored here after fetching
+      user: {} // Store user data here
     };
   },
   computed: {
     isAuthenticated() {
-      // Check if the user is authenticated by verifying the presence of a token
+      // Check for JWT token in localStorage to verify if user is authenticated
       return !!localStorage.getItem("token");
     }
   },
   methods: {
     async fetchUserDetails() {
-  const token = localStorage.getItem('token');
-  console.log('Sending token:', token);  // Log the token
-  try {
-    const response = await axios.get("/api/user/current-user", {
-      headers: {
-        Authorization: `Bearer ${token}`
+      const token = localStorage.getItem('token');
+      try {
+        const response = await axios.get("/api/user/current-user", {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        });
+        this.user = response.data;
+      } catch (error) {
+        console.error('Error fetching user details:', error);
       }
-    });
-    this.user = response.data;
-  } catch (error) {
-    console.error('Error fetching user details:', error);
-  }
-},
+    },
 
     logout() {
-      // Remove the JWT token from localStorage and reload the page
       localStorage.removeItem("token");
       window.location.reload();
-      this.$router.push("/login");  // Redirect to the login page
+      this.$router.push("/login");  // Redirect to login page after logout
     }
   },
   created() {
-    // Fetch user details if authenticated
     if (this.isAuthenticated) {
       this.fetchUserDetails();
     }
@@ -75,24 +70,88 @@ export default {
 </script>
 
 <style>
-/* You can add styles for the navigation bar and layout */
-nav {
-  margin: 10px;
-  background-color: #f8f8f8;
-  padding: 10px;
-}
-
-nav ul {
-  list-style-type: none;
-  display: flex;
-}
-
-nav li {
-  margin-right: 20px;
-}
-
-nav a {
-  text-decoration: none;
+/* Body and overall layout */
+#app {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #f4f6f9;
   color: #333;
+  margin: 0;
+  padding: 0;
+}
+
+/* Navigation Bar */
+nav {
+  background: linear-gradient(135deg, #2c652e, #6da16f);
+  padding: 15px 20px;
+}
+
+.nav-links {
+  list-style: none;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 0;
+}
+
+.nav-links li {
+  margin: 0 15px;
+}
+
+.nav-link {
+  color: white;
+  font-size: 18px;
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.3s ease, transform 0.3s ease;
+}
+
+.nav-link:hover {
+  color: #f8f8f8;
+  transform: scale(1.1);
+}
+
+/* Logout Button */
+.logout-button {
+  background-color: #f44336;
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  font-size: 16px;
+  cursor: pointer;
+  border-radius: 5px;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.logout-button:hover {
+  background-color: #d32f2f;
+  transform: scale(1.05);
+}
+
+/* Welcome Message */
+.welcome-message {
+  text-align: center;
+  margin-top: 20px;
+  font-size: 20px;
+}
+
+.welcome-message strong {
+  color: #56d25a;
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 768px) {
+  .nav-links {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .nav-links li {
+    margin: 10px 0;
+  }
+
+  .logout-button {
+    width: 100%;
+    padding: 12px;
+  }
 }
 </style>
