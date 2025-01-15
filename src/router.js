@@ -9,6 +9,9 @@ import UserRegister from './components/UserRegister.vue';
 import ProductList from './components/ProductList.vue';
 import MyProductList from './components/MyProducts.vue';
 import TranslateLang from './components/TranslateLang.vue';
+import AddProduct from './components/AddProduct.vue';
+import EditProduct from './components/EditProduct.vue';
+import DisplayCart from './components/DisplayCart.vue';
 // Define routes
 const routes = [
   {
@@ -38,17 +41,28 @@ const routes = [
     component: MyProductList, // Component to render
     meta: { requiresAuth: true }
   },
-  // {
-  //   path: "/exchange-rate", // Add a route for the exchange rate page
-  //   name: "ExchangeRate",
-  //   component: ExchangeRate,
-  // },
+  {
+    path: '/addproduct', // Path for login page
+    name: 'AddProduct',
+    component: AddProduct, 
+    meta: { requiresAuth: true }// Component to render for login
+  },
   { path: '/exchange-rate', component: ExchangeRate, meta: { requiresAuth: true } , name: 'ExchangeRate' },
   {
     path: "/translate", // Add a route for the exchange rate page
     name: "TranslateLang",
     component: TranslateLang,
   },
+  {
+    path: '/editproduct/:id',
+    name: 'edit-product',
+    component: EditProduct
+  }
+  , {
+    path: '/displaycart',
+    name: 'display-cart',
+    component: DisplayCart
+  }
   // You can add more routes as needed
 ];
 

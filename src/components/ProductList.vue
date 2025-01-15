@@ -3,10 +3,15 @@
     <h1 class="title">Product List</h1>
     <div v-if="products.length > 0" class="product-list">
       <div v-for="product in products" :key="product.id" class="product-card">
-        <img src="https://via.placeholder.com/300x200" alt="product image" class="product-image" />
+        <img :src="product.imageData ? product.imageUrl : 'https://via.placeholder.com/300x200'" alt="Product Image" class="product-image" />
+
+
+        <!-- <img :src="product.imageUrl" alt="Product Image" class="product-image" /> -->
         <div class="product-info">
           <h3 class="product-name">{{ product.name }}</h3>
-          <p class="product-price">${{ product.price }}</p>
+          <p class="product-price">¥{{ product.price }}</p>
+          <p class="product-stock">Stock: {{ product.stock }}</p>
+          <button @click="addToCart(product.id)">Add to Cart</button>
         </div>
       </div>
     </div>
@@ -22,21 +27,52 @@ import axios from "axios";
 export default {
   data() {
     return {
-      products: [],
+      products: []
+        // Make sure token is set properly
     };
+  },
+  computed: {
+    token() {
+      return localStorage.getItem("token");
+    },
+  },
+
+  methods: {
+    async fetchProducts() {
+  try {
+    console.log("Token:", this.token); // Log the token
+    const response = await axios.get("http://localhost:5004/api/products", {
+      headers: {
+        Authorization: `Bearer ${this.token}`,
+      },
+    });
+    console.log(response.data);
+    this.products = response.data;
+  } catch (error) {
+    console.error("Error fetching products:", error);
+  }
+},
+async addToCart(productId) {
+      try {
+        await axios.post(
+          "http://localhost:5004/api/products/add-to-cart",
+          { productId, quantity: 1 }, // Default quantity is 1
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+          }
+        );
+        alert("Product added to cart!");
+      } catch (error) {
+        console.error("Error adding to cart:", error);
+        alert("Failed to add product to cart.");
+      }
+    }
+,
   },
   created() {
     this.fetchProducts();
-  },
-  methods: {
-    async fetchProducts() {
-      try {
-        const response = await axios.get("http://localhost:5004/api/products");
-        this.products = response.data; // Ensure this matches the API response format
-      } catch (error) {
-        console.error("Error fetching products:", error);
-      }
-    },
   },
 };
 </script>

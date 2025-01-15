@@ -1,15 +1,26 @@
 <template>
   <div class="user-products">
+    <button class="btn-add">
+        <router-link to="/addproduct" class="nav-link">Add</router-link>
+       
+      </button>    
+      <button class="btn-add">
+      <router-link to="/displaycart"  class="nav-link">Cart</router-link></button>   
     <h1 class="title">Your Products</h1>
+
+
     <div v-if="products.length > 0">
       <div class="product-list">
         <div v-for="product in products" :key="product.id" class="product-card">
-          <img src="https://via.placeholder.com/300x200" alt="product image" class="product-image" />
+          <img :src="product.imageData ? product.imageUrl : 'https://via.placeholder.com/300x200'" alt="Product Image" class="product-image" />
+          <!-- <img src="https://via.placeholder.com/300x200" alt="product image" class="product-image" /> -->
           <div class="product-info">
             <h3 class="product-name">{{ product.name }}</h3>
-            <p class="product-price">Price: ${{ product.price }}</p>
+            <p class="product-price">Price: ¥{{ product.price }}</p>
             <p class="product-stock">Stock: {{ product.stock }}</p>
           </div>
+          <router-link :to="'/editproduct/' + product.id" class="edit-button">Edit</router-link>
+          <button @click="deleteProduct(product.id)" class="delete-button">Delete</button>
         </div>
       </div>
     </div>
@@ -24,10 +35,12 @@ import axios from "axios";
 
 export default {
   name: "UserProducts",
+
   data() {
     return {
       products: [],
       isAuthenticated: false,
+ 
     };
   },
   computed: {
@@ -54,10 +67,38 @@ export default {
         this.isAuthenticated = false;
       }
     },
-  },
+    
+ 
+  async deleteProduct(productId) {
+      if (confirm("Are you sure you want to delete this product?")) {
+        try {
+          await axios.delete(`http://localhost:5004/api/products/${productId}`, {
+            headers: {
+              Authorization: `Bearer ${this.token}`,
+            },
+          });
+          // Remove the deleted product from the list
+          this.products = this.products.filter(product => product.id !== productId);
+          alert("Product deleted successfully.");
+        } catch (error) {
+          console.error("Error deleting product:", error);
+          alert("Failed to delete product. Please try again.");
+        }
+      }
+    },
+   
+
+
+ 
+  
+  } ,   
   created() {
     this.fetchUserProducts();
   },
+  
+  
+  
+
 };
 </script>
 
@@ -128,4 +169,58 @@ export default {
   font-size: 18px;
   color: #777;
 }
+ /* Styling for the Add button */
+ .btn-add {
+    background-color: #4CAF50; /* Green background */
+    color: white; /* White text */
+    padding: 10px 20px; /* Spacing around text */
+    font-size: 16px; /* Font size */
+    border: none; /* No border */
+    border-radius: 5px; /* Rounded corners */
+    cursor: pointer; /* Pointer on hover */
+    transition: background-color 0.3s ease; /* Smooth transition */
+  }
+
+  .btn-add:hover {
+    background-color: #45a049; /* Darker green on hover */
+  }
+
+  .btn-add .nav-link {
+    text-decoration: none; /* Remove underline */
+    color: white; /* Ensure link text is white */
+    display: inline-block; /* Make sure the link behaves like a block */
+  }
+  .delete-button {
+  background-color: red;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  cursor: pointer;
+  margin-top: 10px;
+  border-radius: 4px;
+  transition: background-color 0.3s ease;
+  margin: 5px;
+}
+
+.delete-button:hover {
+  background-color: darkred;
+}
+.edit-button {
+  background-color: rgb(0, 61, 153);
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  cursor: pointer;
+  margin-top: 10px;
+  border-radius: 4px;
+  transition: background-color 0.3s ease;
+  margin: 5px;
+  text-decoration: none;
+  font-size: medium;
+}
+
+.edit-button:hover {
+  background-color: rgb(16, 0, 139);
+}
+
 </style>
